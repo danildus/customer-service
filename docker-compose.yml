@@ -1,40 +1,37 @@
 version: '3.8'
-
 services:
   postgres:
-    image: postgres:13.2-alpine
+    image: 'postgres:13.2-alpine'
     restart: on-failure
     environment:
       POSTGRES_DB: adminer
       POSTGRES_USER: adminer
       POSTGRES_PASSWORD: test1802
     ports:
-      - "54321:5432"
-
+      - '54321:5432'
   php:
     build:
       context: .
       target: app_php
-    image: sf-docker/php:dev
+    image: 'sf-docker/php:dev'
     restart: on-failure
     environment:
       APP_ENV: dev
       APP_DEBUG: 1
-      PHP_DATE_TIMEZONE: ${PHP_DATE_TIMEZONE:-UTC}
+      PHP_DATE_TIMEZONE: '${PHP_DATE_TIMEZONE:-UTC}'
     depends_on:
       - postgres
     volumes:
-      - .:/app:rw,cached
-
+      - '.:/app:rw,cached'
   nginx:
     build:
       context: .
       target: app_nginx
-    image: sf-docker/nginx:dev
+    image: 'sf-docker/nginx:dev'
     restart: on-failure
     depends_on:
       - php
     volumes:
-      - ./public:/app/public:rw
+      - './public:/app/public:rw'
     ports:
-      - "8098:80"
+      - '8098:80'

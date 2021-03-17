@@ -8,18 +8,18 @@ ARG WORKDIR=/app
 
 RUN docker-php-source extract \
     && apk add --update --virtual .build-deps autoconf g++ make pcre-dev icu-dev openssl-dev libxml2-dev libmcrypt-dev git libpng-dev \
-# Install pgsql goodness
+    # Install pgsql goodness
     && apk add postgresql-dev \
     && docker-php-ext-install pgsql pdo_pgsql \
     && apk del postgresql-libs libsasl db \
-# Instaling pecl modules
+    # Instaling pecl modules
 	&& pecl install apcu xdebug \
-# Enable pecl modules
+    # Enable pecl modules
     && docker-php-ext-enable apcu opcache \
-# Installing intl
+    # Installing intl
     && apk add icu-libs icu \
     && docker-php-ext-install intl \
-# Post run
+    # Post run
 	&& runDeps="$( \
 		scanelf --needed --nobanner --format '%n#p' --recursive /usr/local/lib/php/extensions \
 			| tr ',' '\n' \
@@ -33,23 +33,17 @@ RUN docker-php-source extract \
     && rm -rf /tmp/pear \
     && rm -rf /var/cache/apk/*
 
-COPY --from=composer:1 /usr/bin/composer /usr/local/bin/composer
+COPY --from=composer /usr/bin/composer /usr/local/bin/composer
 COPY docker/php/php.ini $PHP_INI_DIR/conf.d/php.ini
 COPY docker/php/php-cli.ini $PHP_INI_DIR/conf.d/php-cli.ini
 
 RUN mkdir -p ${WORKDIR}
 WORKDIR ${WORKDIR}
 
-# https://getcomposer.org/doc/03-cli.md#composer-allow-superuser
-ENV COMPOSER_ALLOW_SUPERUSER=1
-RUN set -eux; \
-	composer global require "hirak/prestissimo:^0.3" --prefer-dist --no-progress --no-suggest --classmap-authoritative; \
-	composer clear-cache
-
 # prevent the reinstallation of vendors at every changes in the source code
 COPY composer.json composer.lock symfony.lock ./
 RUN set -eux; \
-	composer install --prefer-dist --no-autoloader --no-scripts  --no-progress --no-suggest; \
+	composer install --prefer-dist --no-autoloader --no-scripts  --no-progress; \
 	composer clear-cache
 
 RUN set -eux \
