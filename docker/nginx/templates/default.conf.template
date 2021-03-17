@@ -1,0 +1,21 @@
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
+    set $apiRoot /app/public;
+
+    root $apiRoot;
+
+    location ~ \.php$ {
+        return 404;
+    }
+
+    location / {
+        fastcgi_pass php:9000;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $apiRoot/index.php;
+        fastcgi_param DOCUMENT_ROOT $apiRoot;
+        fastcgi_read_timeout 150;
+        proxy_read_timeout 3600;
+    }
+}

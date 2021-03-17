@@ -31,7 +31,5 @@ services:
     restart: on-failure
     depends_on:
       - php
-    volumes:
-      - './public:/app/public:rw'
     ports:
       - '8098:80'
