@@ -6,12 +6,12 @@ import { HomeComponent } from './home/home.component';
 import { CustomersComponent } from './customers/customers.component';
 import { Routes, RouterModule } from '@angular/router';
 import { CustomerFormComponent } from './customer-form/customer-form.component';
-import {HttpModule} from "@angular/http";
-import {FormsModule} from "@angular/forms";
+import { HttpModule } from "@angular/http";
+import { FormsModule } from "@angular/forms";
 
 const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' },
-  { path: 'api/customers', component: CustomersComponent },
+  { path: 'customers', component: CustomersComponent },
   { path: '**', redirectTo: '', pathMatch: 'full' }
 ];
 

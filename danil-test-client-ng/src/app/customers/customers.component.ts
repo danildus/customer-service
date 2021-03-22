@@ -14,7 +14,6 @@ export class CustomersComponent implements OnInit {
   errorMessage: string | undefined;
   isLoading: boolean = true;
   errors: string = '';
-  editId: Number | undefined;
 
   constructor(private customersService: CustomersService) {}
 
@@ -40,10 +39,6 @@ export class CustomersComponent implements OnInit {
     return <Customers>this.customers.find(customer => customer.id === id);
   }
 
-  isUpdating(id: any): boolean {
-    return this.findCustomer(id).isUpdating;
-  }
-
   appendCustomer(customers: Customers) {
     // @ts-ignore
     this.customers.push(customers);
@@ -62,7 +57,6 @@ export class CustomersComponent implements OnInit {
       .subscribe(
         customer => {
           this.isLoading = false;
-          customer.isUpdating = false;
         },
         error => {
           this.errors = error.json().errors;
@@ -71,7 +65,7 @@ export class CustomersComponent implements OnInit {
       );
   }
 
-  deleteCustomer(customer: Customers) {
+  deleteCustomer(customer: Customers, number: Number) {
     this.customersService
       .deleteCustomer( {
         id: customer.id
@@ -79,7 +73,8 @@ export class CustomersComponent implements OnInit {
       .subscribe(
         customer => {
           this.isLoading = false;
-          customer.isUpdating = false;
+          // @ts-ignore
+          this.customers.splice(number, 1);
         },
         error => {
           this.errors = error.json().errors;

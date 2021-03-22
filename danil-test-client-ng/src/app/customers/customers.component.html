@@ -4,7 +4,6 @@
   <table class="table" *ngIf="!isLoading">
     <thead>
     <tr>
-      <th>ID</th>
       <th>First name</th>
       <th>Last name</th>
       <th>Email</th>
@@ -12,11 +11,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let customer of customers">
-      <td>
-        <span *ngIf="!customer.editable">{{ customer.id }}</span>
-        <input class="input" [(ngModel)]="customer.id" *ngIf="customer.editable">
-      </td>
+    <tr *ngFor="let customer of customers; let number = index">
       <td>
         <span *ngIf="!customer.editable">{{ customer.firstName }}</span>
         <input class="input" [(ngModel)]="customer.firstName" *ngIf="customer.editable">
@@ -34,7 +29,7 @@
         <input class="input" [(ngModel)]="customer.phoneNumber" *ngIf="customer.editable">
       </td>
       <td><button class="button is-primary" (click)="editCustomer(customer)">Edit</button></td>
-      <td><button class="button is-danger" (click)="deleteCustomer(customer)">Delete</button></td>
+      <td><button class="button is-danger" (click)="deleteCustomer(customer, number)">Delete</button></td>
     </tr>
     </tbody>
   </table>

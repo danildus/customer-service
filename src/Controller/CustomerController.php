@@ -39,7 +39,7 @@ class CustomerController
     }
 
     /**
-     * @Route("/customers", name="get_all_customer", methods={"GET"})
+     * @Route("/api/customers", name="get_all_customer", methods={"GET"})
      * @return JsonResponse
      */
 
@@ -62,7 +62,7 @@ class CustomerController
     }
 
     /**
-     * @Route("/customers/add", name="add_customer", methods={"POST"})
+     * @Route("/api/customers/add", name="add_customer", methods={"POST"})
      * @param Request $request
      * @return JsonResponse
      */
@@ -85,7 +85,7 @@ class CustomerController
     }
 
     /**
-     * @Route("/customers/update/{id}", name="update_customer", methods={"PUT"})
+     * @Route("/api/customers/update/{id}", name="update_customer", methods={"PUT"})
      * @param $id
      * @param Request $request
      * @return JsonResponse
@@ -106,7 +106,7 @@ class CustomerController
     }
 
     /**
-     * @Route("/customers/delete/{id}", name="delete_customer", methods={"DELETE"})
+     * @Route("/api/customers/delete/{id}", name="delete_customer", methods={"DELETE"})
      * @param $id
      * @return JsonResponse
      */

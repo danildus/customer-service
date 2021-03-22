@@ -54,6 +54,7 @@ VOLUME ${WORKDIR}/var
 
 COPY docker/php/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
 RUN chmod +x /usr/local/bin/docker-entrypoint
+EXPOSE 9000
 
 ENTRYPOINT ["docker-entrypoint"]
 CMD ["php-fpm"]

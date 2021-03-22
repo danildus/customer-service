@@ -20,7 +20,7 @@ export class CustomerFormComponent implements OnInit {
   ngOnInit() {
   }
 
-  addCustomer(firstName: any, lastName: any, email: any, phoneNumber: any) {
+  addCustomer(firstName: String, lastName: String, email: String, phoneNumber: String) {
     this.isLoading = true;
     this.customersService
       .addCustomer({
@@ -32,7 +32,10 @@ export class CustomerFormComponent implements OnInit {
       .subscribe(
         customer => {
           this.isLoading = false;
-          customer.isUpdating = false;
+          customer.firstName = firstName;
+          customer.lastName = lastName;
+          customer.email = email;
+          customer.phoneNumber = phoneNumber;
           this.customerAdded.emit(customer);
         },
         error => {
@@ -42,8 +45,7 @@ export class CustomerFormComponent implements OnInit {
       );
   }
 
-  updateCustomer(id: any ,firstName: any, lastName: any, email: any, phoneNumber: any) {
-    console.log("POINT", firstName);
+  updateCustomer(id: Number ,firstName: String, lastName: String, email: String, phoneNumber: String) {
     this.isLoading = true;
     this.customersService
       .updateCustomer({
@@ -56,7 +58,6 @@ export class CustomerFormComponent implements OnInit {
       .subscribe(
         customer => {
           this.isLoading = false;
-          customer.isUpdating = false;
           this.customerAdded.emit(customer);
         },
         error => {
