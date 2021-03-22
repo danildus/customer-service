@@ -58,7 +58,6 @@ RUN chmod +x /usr/local/bin/docker-entrypoint
 ENTRYPOINT ["docker-entrypoint"]
 CMD ["php-fpm"]
 
-
 FROM nginx:${NGINX_VERSION}-alpine AS app_nginx
 
 COPY docker/nginx/templates /etc/nginx/templates/

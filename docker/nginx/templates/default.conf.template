@@ -10,12 +10,28 @@ server {
         return 404;
     }
 
-    location / {
+    location /sockjs-node/ {
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        rewrite ^/(.*)$  /$1  break;
+        proxy_set_header Host web;
+        proxy_pass http://web:8000/;
+        proxy_read_timeout 3600;
+    }
+
+
+    location ~ ^/(api|oauth|_profiler|_wdt|_error) {
         fastcgi_pass php:9000;
         include fastcgi_params;
         fastcgi_param SCRIPT_FILENAME $apiRoot/index.php;
         fastcgi_param DOCUMENT_ROOT $apiRoot;
         fastcgi_read_timeout 150;
+        proxy_read_timeout 3600;
+    }
+
+    location / {
+        proxy_pass http://web:8000/;
         proxy_read_timeout 3600;
     }
 }

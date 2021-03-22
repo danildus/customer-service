@@ -39,6 +39,29 @@ class CustomerController
     }
 
     /**
+     * @Route("/customers", name="get_all_customer", methods={"GET"})
+     * @return JsonResponse
+     */
+
+    public function getAll(): JsonResponse
+    {
+        $customers = $this->customerRepository->findAll();
+        $result = [];
+        foreach ($customers as $customer) {
+            $data = [
+                'id' => $customer->getId(),
+                'firstName' => $customer->getFirstName(),
+                'lastName' => $customer->getLastName(),
+                'email' => $customer->getEmail(),
+                'phoneNumber' => $customer->getPhoneNumber(),
+            ];
+            $result[] = $data;
+        }
+
+        return new JsonResponse($result, Response::HTTP_OK);
+    }
+
+    /**
      * @Route("/customers/add", name="add_customer", methods={"POST"})
      * @param Request $request
      * @return JsonResponse
