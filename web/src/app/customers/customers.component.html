@@ -1,0 +1,39 @@
+<div>
+  <span class="help is-info" *ngIf="isLoading">Loading...</span>
+  <table class="table table-striped table-bordered  " *ngIf="!isLoading">
+    <thead>
+    <tr>
+      <th>First name</th>
+      <th>Last name</th>
+      <th>Email</th>
+      <th>Phone number</th>
+      <th></th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let customer of customers; let number = index">
+      <td>
+        <span *ngIf="!customer.editable">{{ customer.firstName }}</span>
+        <input class="input" [(ngModel)]="customer.firstName" *ngIf="customer.editable">
+      </td>
+      <td>
+        <span *ngIf="!customer.editable">{{ customer.lastName }}</span>
+        <input class="input" [(ngModel)]="customer.lastName" *ngIf="customer.editable">
+      </td>
+      <td>
+        <span *ngIf="!customer.editable">{{ customer.email }}</span>
+        <input class="input" [(ngModel)]="customer.email" *ngIf="customer.editable">
+      </td>
+      <td>
+        <span *ngIf="!customer.editable">{{ customer.phoneNumber }}</span>
+        <input class="input" [(ngModel)]="customer.phoneNumber" *ngIf="customer.editable">
+      </td>
+      <td><button class="button is-primary" (click)="editCustomer(customer)">Edit</button></td>
+      <td><button class="button is-danger" (click)="deleteCustomer(customer, number)">Delete</button></td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<app-customer-form (customerAdded)="appendCustomer($event)"></app-customer-form>
+

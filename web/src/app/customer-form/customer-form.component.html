@@ -1,0 +1,31 @@
+<span class="help is-danger">{{ errors }}</span>
+
+<div class="field">
+  <div class="control has-icons-left">
+    <input class="input" placeholder="Enter first name" required #customerFirstName (keydown)="errors = ''">
+    <span class="icon is-small is-left">
+      <i class="fa fa-user-edit"></i>
+    </span>
+  </div>
+  <div class="control has-icons-left">
+    <input class="input" placeholder="Enter last name" required #customerLastName (keydown)="errors = ''">
+    <span class="icon is-small is-left">
+      <i class="fa fa-user-edit"></i>
+    </span>
+  </div>
+  <div class="control has-icons-left">
+    <input class="input" type="email" placeholder="Enter email" required #customerEmail (keydown)="errors = ''">
+    <span class="icon is-small is-left">
+      <i class="fa fa-envelope"></i>
+    </span>
+  </div>
+  <div class="control has-icons-left">
+    <input class="input" placeholder="Enter phone number" required #customerPhoneNumber (keydown)="errors = ''">
+    <span class="icon is-small is-left">
+      <i class="fa fa-mobile"></i>
+    </span>
+  </div>
+</div>
+
+<button type="button" class="button is-primary" [class.is-loading]="isLoading"
+        (click)="addCustomer(customerFirstName.value, customerLastName.value, customerEmail.value, customerPhoneNumber.value)">Add Customer</button>

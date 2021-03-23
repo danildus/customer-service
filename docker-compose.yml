@@ -11,7 +11,7 @@ services:
       - '54321:5432'
   php:
     build:
-      context: .
+      context: ./php/
       target: app_php
     image: 'sf-docker/php:dev'
     restart: on-failure
@@ -22,10 +22,10 @@ services:
     depends_on:
       - postgres
     volumes:
-      - '.:/app:rw,cached'
+      - './php/project:/app:rw,cached'
   nginx:
     build:
-      context: .
+      context: ./nginx/
       target: app_nginx
     image: 'sf-docker/nginx:dev'
     restart: on-failure
@@ -37,6 +37,6 @@ services:
     image: 'node:15.12.0-alpine3.10'
     working_dir: /app
     volumes:
-    - './danil-test-client-ng:/app'
+    - './web:/app'
     command: npm run start
 
