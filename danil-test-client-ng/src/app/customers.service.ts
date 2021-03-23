@@ -21,8 +21,7 @@ export class CustomersService {
   constructor(private http: Http) { }
 
   getCustomers(): Observable<Customers[]> {
-    return this.http.get(API_URL + 'api/customers')
-      .map(res => res.json());
+    return this.http.get(API_URL + 'api/customers').map(res => res.json());
   }
 
   addCustomer(customer: { firstName: String, lastName: String, email: String, phoneNumber: String; }): Observable<Customers> {

@@ -1,7 +1,7 @@
 <div>
   <span class="help is-info"  *ngIf="isLoading">Loading...</span>
   <app-customer-form (customerAdded)="appendCustomer($event)"></app-customer-form>
-  <table class="table" *ngIf="!isLoading">
+  <table class="table table-responsive" *ngIf="!isLoading">
     <thead>
     <tr>
       <th>First name</th>

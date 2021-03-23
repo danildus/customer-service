@@ -33,12 +33,6 @@ export class CustomersComponent implements OnInit {
       );
   }
 
-
-  findCustomer(id: Number): Customers {
-    // @ts-ignore
-    return <Customers>this.customers.find(customer => customer.id === id);
-  }
-
   appendCustomer(customers: Customers) {
     // @ts-ignore
     this.customers.push(customers);
@@ -46,23 +40,26 @@ export class CustomersComponent implements OnInit {
 
   editCustomer(customer: Customers) {
     customer.editable = !customer.editable;
-    this.customersService
-      .updateCustomer({
-        id: customer.id,
-        firstName: customer.firstName,
-        lastName: customer.lastName,
-        email: customer.email,
-        phoneNumber: customer.phoneNumber
-      })
-      .subscribe(
-        customer => {
-          this.isLoading = false;
-        },
-        error => {
-          this.errors = error.json().errors;
-          this.isLoading = false;
-        }
-      );
+
+    if (!customer.editable) {
+      this.customersService
+        .updateCustomer({
+          id: customer.id,
+          firstName: customer.firstName,
+          lastName: customer.lastName,
+          email: customer.email,
+          phoneNumber: customer.phoneNumber
+        })
+        .subscribe(
+          () => {
+            this.isLoading = false;
+          },
+          error => {
+            this.errors = error.json().errors;
+            this.isLoading = false;
+          }
+        );
+    }
   }
 
   deleteCustomer(customer: Customers, number: Number) {

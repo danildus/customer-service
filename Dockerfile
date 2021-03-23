@@ -34,10 +34,9 @@ RUN docker-php-source extract \
     && rm -rf /var/cache/apk/*
 
 COPY --from=composer /usr/bin/composer /usr/local/bin/composer
-COPY docker/php/php.ini $PHP_INI_DIR/conf.d/php.ini
-COPY docker/php/php-cli.ini $PHP_INI_DIR/conf.d/php-cli.ini
+COPY php/php.ini $PHP_INI_DIR/conf.d/php.ini
+COPY php/php-cli.ini $PHP_INI_DIR/conf.d/php-cli.ini
 
-RUN mkdir -p ${WORKDIR}
 WORKDIR ${WORKDIR}
 
 # prevent the reinstallation of vendors at every changes in the source code
@@ -52,7 +51,7 @@ RUN set -eux \
 
 VOLUME ${WORKDIR}/var
 
-COPY docker/php/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
+COPY php/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
 RUN chmod +x /usr/local/bin/docker-entrypoint
 EXPOSE 9000
 
@@ -61,7 +60,7 @@ CMD ["php-fpm"]
 
 FROM nginx:${NGINX_VERSION}-alpine AS app_nginx
 
-COPY docker/nginx/templates /etc/nginx/templates/
+COPY nginx/templates /etc/nginx/templates/
 
 # Fix "www-data" user & group ids
 RUN set -x ; \

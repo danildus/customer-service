@@ -17,8 +17,7 @@ export class CustomerFormComponent implements OnInit {
   @Output()
   customerAdded: EventEmitter<Customers> = new EventEmitter<Customers>();
 
-  ngOnInit() {
-  }
+  ngOnInit() { }
 
   addCustomer(firstName: String, lastName: String, email: String, phoneNumber: String) {
     this.isLoading = true;
@@ -44,27 +43,4 @@ export class CustomerFormComponent implements OnInit {
         }
       );
   }
-
-  updateCustomer(id: Number ,firstName: String, lastName: String, email: String, phoneNumber: String) {
-    this.isLoading = true;
-    this.customersService
-      .updateCustomer({
-        id: id,
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
-        phoneNumber: phoneNumber
-      })
-      .subscribe(
-        customer => {
-          this.isLoading = false;
-          this.customerAdded.emit(customer);
-        },
-        error => {
-          this.errors = error.json().errors;
-          this.isLoading = false;
-        }
-      );
-  }
-
 }
