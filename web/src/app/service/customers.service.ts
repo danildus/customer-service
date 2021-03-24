@@ -1,16 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import { Observable } from 'rxjs';
+import { Customers } from '../model/customer';
 import 'rxjs/add/operator/map';
-
-export interface Customers {
-  id: number;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phoneNumber: string;
-  editable: boolean;
-}
 
 const API_URL = 'http://localhost:8098/';
 

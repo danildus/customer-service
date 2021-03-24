@@ -2,10 +2,10 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
-import { HomeComponent } from './home/home.component';
-import { CustomersComponent } from './customers/customers.component';
+import { HomeComponent } from './components/home/home.component';
+import { CustomersComponent } from './components/customers/customers.component';
 import { Routes, RouterModule } from '@angular/router';
-import { CustomerFormComponent } from './customer-form/customer-form.component';
+import { CustomerFormComponent } from './components/customer-form/customer-form.component';
 import { HttpModule } from '@angular/http';
 import { FormsModule } from '@angular/forms';
 
