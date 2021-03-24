@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\CustomerRepository;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -76,7 +77,7 @@ class CustomerController
         $phoneNumber = $data['phoneNumber'];
 
         if (empty($firstName) || empty($lastName) || empty($email) || empty($phoneNumber)) {
-            throw new NotFoundHttpException('Expecting mandatory parameters!');
+            throw new BadRequestHttpException('Expecting mandatory parameters!');
         }
 
         $this->customerRepository->saveCustomer($firstName, $lastName, $email, $phoneNumber);

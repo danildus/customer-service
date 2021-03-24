@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Customers, CustomersService } from '../customers.service';
-// tslint:disable-next-line:import-blacklist
-import 'rxjs/Rx';
 
 @Component({
   selector: 'app-customers',
@@ -18,13 +16,11 @@ export class CustomersComponent implements OnInit {
 
   constructor(private customersService: CustomersService) {}
 
-  // tslint:disable-next-line:typedef
-  ngOnInit() {
+  ngOnInit(): any {
     this.getCustomers();
   }
 
-  // tslint:disable-next-line:typedef
-  getCustomers() {
+  getCustomers(): any {
     this.customersService
       .getCustomers()
       .subscribe(
@@ -36,14 +32,11 @@ export class CustomersComponent implements OnInit {
       );
   }
 
-  // tslint:disable-next-line:typedef
-  appendCustomer(customers: Customers) {
-    // @ts-ignore
-    this.customers.push(customers);
+  appendCustomer(customers: Customers): any {
+    this.customers?.push(customers);
   }
 
-  // tslint:disable-next-line:typedef
-  editCustomer(customer: Customers) {
+  editCustomer(customer: Customers): any {
     customer.editable = !customer.editable;
 
     if (!customer.editable) {
@@ -67,8 +60,7 @@ export class CustomersComponent implements OnInit {
     }
   }
 
-  // tslint:disable-next-line:typedef
-  deleteCustomer(customer: Customers, index: number) {
+  deleteCustomer(customer: Customers, index: number): any {
     this.customersService
       .deleteCustomer( {
         id: customer.id
@@ -76,8 +68,7 @@ export class CustomersComponent implements OnInit {
       .subscribe(
         () => {
           this.isLoading = false;
-          // @ts-ignore
-          this.customers.splice(index, 1);
+          this.customers?.splice(index, 1);
         },
         error => {
           this.errors = error.json().errors;

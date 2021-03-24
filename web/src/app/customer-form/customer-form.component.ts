@@ -1,7 +1,5 @@
 import { Component, OnInit, EventEmitter, Output  } from '@angular/core';
 import { Customers, CustomersService } from '../customers.service';
-// tslint:disable-next-line:import-blacklist
-import 'rxjs/Rx';
 
 @Component({
   selector: 'app-customer-form',
@@ -18,11 +16,9 @@ export class CustomerFormComponent implements OnInit {
   @Output()
   customerAdded: EventEmitter<Customers> = new EventEmitter<Customers>();
 
-  // tslint:disable-next-line:typedef
-  ngOnInit() { }
+  ngOnInit(): any { }
 
-  // tslint:disable-next-line:typedef
-  addCustomer(firstName: string, lastName: string, email: string, phoneNumber: string) {
+  addCustomer(firstName: string, lastName: string, email: string, phoneNumber: string): any {
     this.isLoading = true;
     this.customersService
       .addCustomer({
