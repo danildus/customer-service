@@ -1,31 +1,99 @@
-<span class="help is-danger">{{ errors }}</span>
+<div>{{ errors }}</div>
+<form *ngIf="!errors"
+  [formGroup]="myForm"
+  novalidate
+>
+  <div class="form-group">
+    <label>First Name</label>
+    <input
+      class="form-control"
+      name="firstName"
+      formControlName="userFirstName"
+      placeholder="Enter First Name"
+    />
 
-<div class="field">
-  <div class="control has-icons-left">
-    <input class="input" placeholder="Enter first name" required #customerFirstName (keydown)="errors = ''">
-    <span class="icon is-small is-left">
-      <i class="fa fa-user-edit"></i>
-    </span>
+    <div
+      class="alert alert-danger"
+      *ngIf="
+            myForm.controls['userFirstName'].invalid &&
+            myForm.controls['userFirstName'].touched
+          "
+    >
+      Incorrect first name
+    </div>
   </div>
-  <div class="control has-icons-left">
-    <input class="input" placeholder="Enter last name" required #customerLastName (keydown)="errors = ''">
-    <span class="icon is-small is-left">
-      <i class="fa fa-user-edit"></i>
-    </span>
-  </div>
-  <div class="control has-icons-left">
-    <input class="input" type="email" placeholder="Enter email" required #customerEmail (keydown)="errors = ''">
-    <span class="icon is-small is-left">
-      <i class="fa fa-envelope"></i>
-    </span>
-  </div>
-  <div class="control has-icons-left">
-    <input class="input" placeholder="Enter phone number" required #customerPhoneNumber (keydown)="errors = ''">
-    <span class="icon is-small is-left">
-      <i class="fa fa-mobile"></i>
-    </span>
-  </div>
-</div>
+  <div class="form-group">
+    <label>Last Name</label>
+    <input
+      class="form-control"
+      name="lastName"
+      formControlName="userLastName"
+      placeholder="Enter Last Name"
+    />
 
-<button type="button" class="button is-primary" [class.is-loading]="isLoading"
-        (click)="addCustomer(customerFirstName.value, customerLastName.value, customerEmail.value, customerPhoneNumber.value)">Add Customer</button>
+    <div
+      class="alert alert-danger"
+      *ngIf="
+            myForm.controls['userLastName'].invalid &&
+            myForm.controls['userLastName'].touched
+          "
+    >
+      Incorrect last name
+    </div>
+  </div>
+  <div class="form-group">
+    <label>Email</label>
+    <input
+      class="form-control"
+      name="email"
+      formControlName="userEmail"
+      placeholder="Enter Email"
+    />
+
+    <div
+      class="alert alert-danger"
+      *ngIf="
+            myForm.controls['userEmail'].invalid &&
+            myForm.controls['userEmail'].touched
+          "
+    >
+      Incorrect email
+    </div>
+  </div>
+  <div class="form-group">
+    <label>Phone number</label>
+    <input
+      class="form-control form"
+      name="phone"
+      formControlName="userPhone"
+      placeholder="Enter Phone Number"
+    />
+
+    <div
+      class="alert alert-danger"
+      *ngIf="
+            myForm.controls['userPhone'].invalid &&
+            myForm.controls['userPhone'].touched
+          "
+    >
+      Incorrect Phone Number, number must contain 8 digits
+    </div>
+  </div>
+  <div class="form-group">
+    <button *ngIf="isCreate"
+            class="btn btn-primary"
+            [disabled]="myForm.invalid"
+            (click)="addCustomer(myForm.value.userFirstName,myForm.value.userLastName, myForm.value.userEmail, myForm.value.userPhone)"
+    >
+      Add
+    </button>
+
+    <button *ngIf="isUpdate"
+            class="btn btn-primary"
+            [disabled]="myForm.invalid"
+            (click)="editCustomer(myForm.value.userFirstName,myForm.value.userLastName, myForm.value.userEmail, myForm.value.userPhone)"
+    >
+      Update
+    </button>
+  </div>
+</form>

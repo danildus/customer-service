@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CustomersService } from '../../service/customers.service';
 import { Customers } from '../../model/customer';
+import { CustomerTransportService } from '../../service/customer-transport.service';
 
 @Component({
   selector: 'app-customers',
@@ -10,12 +11,15 @@ import { Customers } from '../../model/customer';
 
 export class CustomersComponent implements OnInit {
 
-  customers: Customers[] | undefined;
+  customers: Customers[] = [];
   errorMessage: string | undefined;
   isLoading = true;
   errors = '';
+  isSorted = false;
+  searchString = '';
+  searchType = '';
 
-  constructor(private customersService: CustomersService) {}
+  constructor(private customersService: CustomersService, private customerTransportService: CustomerTransportService) {}
 
   ngOnInit(): any {
     this.getCustomers();
@@ -37,28 +41,19 @@ export class CustomersComponent implements OnInit {
     this.customers?.push(customers);
   }
 
-  editCustomer(customer: Customers): any {
-    customer.editable = !customer.editable;
+  redirectToForm(customer: Customers): any {
+    this.customerTransportService.customer = customer;
+  }
 
-    if (!customer.editable) {
-      this.customersService
-        .updateCustomer({
-          id: customer.id,
-          firstName: customer.firstName,
-          lastName: customer.lastName,
-          email: customer.email,
-          phoneNumber: customer.phoneNumber
-        })
-        .subscribe(
-          () => {
-            this.isLoading = false;
-          },
-          error => {
-            this.errors = error.json().errors;
-            this.isLoading = false;
-          }
-        );
+  sortField(field: string): any {
+    if (!this.isSorted) {
+      // @ts-ignore
+      this.customers?.sort((a, b) => a[field] > b[field] ? 1 : -1);
+      this.isSorted = true;
+    } else {
+      this.customers?.reverse();
     }
+
   }
 
   deleteCustomer(customer: Customers, index: number): any {

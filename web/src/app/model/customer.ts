@@ -4,5 +4,4 @@ export interface Customers {
   lastName: string;
   email: string;
   phoneNumber: string;
-  editable: boolean;
 }

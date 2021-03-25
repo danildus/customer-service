@@ -8,7 +8,7 @@ tbody td, thead th {
 }
 
 tbody {
-  height: 500px;       /* Just for the demo          */
-  overflow-y: auto;    /* Trigger vertical scroll    */
-  overflow-x: hidden;  /* Hide the horizontal scroll */
+  height: 800px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }

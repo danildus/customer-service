@@ -7,11 +7,18 @@ import { CustomersComponent } from './components/customers/customers.component';
 import { Routes, RouterModule } from '@angular/router';
 import { CustomerFormComponent } from './components/customer-form/customer-form.component';
 import { HttpModule } from '@angular/http';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FilterPipe } from './pipes/filter.pipe';
+import { MatSliderModule } from '@angular/material/slider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatInputModule } from '@angular/material/input';
 
 const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' },
   { path: 'customers', component: CustomersComponent },
+  { path: 'customers/modify', component: CustomerFormComponent },
   { path: '**', redirectTo: '', pathMatch: 'full' }
 ];
 
@@ -21,12 +28,19 @@ const routes: Routes = [
     AppComponent,
     HomeComponent,
     CustomersComponent,
-    CustomerFormComponent
+    CustomerFormComponent,
+    FilterPipe
   ],
   imports: [
     BrowserModule,
     RouterModule.forRoot(routes),
     HttpModule,
+    ReactiveFormsModule,
+    MatSliderModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    BrowserAnimationsModule,
+    MatInputModule,
     FormsModule
   ],
   providers: [],
