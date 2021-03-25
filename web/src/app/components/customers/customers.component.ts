@@ -52,6 +52,7 @@ export class CustomersComponent implements OnInit {
       this.isSorted = true;
     } else {
       this.customers?.reverse();
+      this.isSorted = false;
     }
 
   }
