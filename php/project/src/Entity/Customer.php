@@ -57,7 +57,7 @@ class Customer
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * @Assert\Regex(
-     *     pattern="/[0-9]{10}/",
+     *     pattern="/^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$/",
      *     message="Your phone number is incorrect"
      * )
      */

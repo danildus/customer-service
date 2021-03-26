@@ -42,7 +42,7 @@ export class CustomerFormComponent implements OnInit {
       userPhone: new FormControl(this.customerTransportService.customer?.phoneNumber, [
         Validators.required,
         Validators.pattern(
-          '[0-9]{10}'
+          '^((8|\\+7)[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{7,10}$'
         ),
       ]),
     });
