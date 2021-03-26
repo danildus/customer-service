@@ -27,17 +27,9 @@ class CustomerRepository extends ServiceEntityRepository
         $this->manager = $manager;
     }
 
-    public function saveCustomer($firstName, $lastName, $email, $phoneNumber)
+    public function saveCustomer(Customer $customer)
     {
-        $newCustomer = new Customer();
-
-        $newCustomer
-            ->setFirstName($firstName)
-            ->setLastName($lastName)
-            ->setEmail($email)
-            ->setPhoneNumber($phoneNumber);
-
-        $this->manager->persist($newCustomer);
+        $this->manager->persist($customer);
         $this->manager->flush();
     }
 

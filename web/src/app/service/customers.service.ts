@@ -18,14 +18,14 @@ export class CustomersService {
   }
 
   addCustomer(customer: { firstName: string, lastName: string, email: string, phoneNumber: string; }): Observable<Customers> {
-    return this.http.post(API_URL + 'api/customers/add', customer).map(res => res.json());
+    return this.http.post(API_URL + 'api/customers', customer).map(res => res.json());
   }
 
   updateCustomer(customer: { firstName: string; lastName: string; phoneNumber: string; id: number; email: string }): Observable<Customers> {
-    return this.http.put(API_URL + 'api/customers/update/' + customer.id, customer).map(res => res.json());
+    return this.http.put(API_URL + 'api/customers/' + customer.id, customer).map(res => res.json());
   }
 
   deleteCustomer(customer: { id: number; }): Observable<Customers> {
-    return this.http.delete(API_URL + 'api/customers/delete/' + customer.id).map(res => res.json());
+    return this.http.delete(API_URL + 'api/customers/' + customer.id).map(res => res.json());
   }
 }

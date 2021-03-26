@@ -21,15 +21,14 @@ export class CustomerFormComponent implements OnInit {
   isCreate: boolean | undefined;
   isUpdate: boolean | undefined;
 
-  constructor(private customersService: CustomersService, private customerTransportService: CustomerTransportService, private router: Router) {
-    console.log('CUSTOMER_CHECK', this.customerTransportService.customer);
+  constructor(private customersService: CustomersService,
+              private customerTransportService: CustomerTransportService,
+              private router: Router) {
     if (this.customerTransportService.customer) {
       this.isUpdate = true;
     } else {
       this.isCreate = true;
     }
-    console.log('CUSTOMER_UPDATE', this.isUpdate);
-    console.log('CUSTOMER_CREATE', this.isCreate);
 
     this.myForm = new FormGroup({
       userFirstName: new FormControl(this.customerTransportService.customer?.firstName, Validators.required),
@@ -66,7 +65,7 @@ export class CustomerFormComponent implements OnInit {
           this.router.navigate(['/customers']);
         },
         error => {
-          this.errors = error.json().detail;
+          this.errors = error.json();
           this.isLoading = false;
         }
       );
@@ -88,7 +87,7 @@ export class CustomerFormComponent implements OnInit {
           this.router.navigate(['/customers']);
         },
         error => {
-          this.errors = error.json().errors;
+          this.errors = error.json();
           this.isLoading = false;
         }
       );
