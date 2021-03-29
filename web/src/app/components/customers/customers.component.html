@@ -19,7 +19,7 @@
         class="form-control"
         name="searchString"
         placeholder="Search for First Name..."
-        [(ngModel)]="searchString"
+        [formControl]="searchStringControl"
       />
     </div>
   </div>
@@ -51,7 +51,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let customer of customers | filter : searchType : searchString; let number = index">
+    <tr *ngFor="let customer of customers; let number = index">
       <td>
         <span>{{ customer.firstName }}</span>
       </td>
@@ -64,7 +64,7 @@
       <td>
         <span>{{ customer.phoneNumber }}</span>
       </td>
-      <td><button class="button is-primary" (click)="redirectToForm(customer)" [routerLink]="['modify']">Edit</button></td>
+      <td><button class="button is-primary" [routerLink]="[customer.id, 'modify']">Edit</button></td>
       <td><button class="button is-danger" (click)="deleteCustomer(customer, number)">Delete</button></td>
     </tr>
     </tbody>

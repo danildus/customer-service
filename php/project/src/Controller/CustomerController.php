@@ -19,7 +19,7 @@ class CustomerController
     }
 
     /**
-     * @Route("/customers/{id}", name="get_one_customer", methods={"GET"})
+     * @Route("/api/customers/{id}", name="get_one_customer", methods={"GET"})
      * @param $id
      * @param CustomerService $customerService
      * @return JsonResponse
@@ -27,6 +27,18 @@ class CustomerController
     public function get($id, CustomerService $customerService): JsonResponse
     {
         return $customerService->get($id);
+    }
+
+    /**
+     * @Route("/api/customers/{params}/{value}", name="get_customer_by", methods={"GET"})
+     * @param $value
+     * @param $params
+     * @param CustomerService $customerService
+     * @return JsonResponse
+     */
+    public function getByParams($value, $params, CustomerService $customerService): JsonResponse
+    {
+        return $customerService->getBy($value, $params);
     }
 
     /**

@@ -19,6 +19,7 @@ const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' },
   { path: 'customers', component: CustomersComponent },
   { path: 'customers/modify', component: CustomerFormComponent },
+  { path: 'customers/:customer_id/modify', component: CustomerFormComponent },
   { path: '**', redirectTo: '', pathMatch: 'full' }
 ];
 

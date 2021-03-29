@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CustomersService } from '../../service/customers.service';
 import { Customers } from '../../model/customer';
-import { CustomerTransportService } from '../../service/customer-transport.service';
+import { FormControl } from '@angular/forms';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-customers',
@@ -12,17 +13,27 @@ import { CustomerTransportService } from '../../service/customer-transport.servi
 export class CustomersComponent implements OnInit {
 
   customers: Customers[] = [];
-  errorMessage: string | undefined;
+  errorMessage = '';
   isLoading = true;
   errors = '';
   isSorted = false;
   searchString = '';
   searchType = '';
+  searchStringControl: FormControl = new FormControl();
 
-  constructor(private customersService: CustomersService, private customerTransportService: CustomerTransportService) {}
+  constructor(private customersService: CustomersService) { }
 
   ngOnInit(): any {
     this.getCustomers();
+    this.searchStringControl.valueChanges.pipe(debounceTime(300)).subscribe(
+      value => {
+        if (value) {
+          this.getCustomersBy(value, this.searchType);
+        } else {
+          this.getCustomers();
+        }
+      }
+    );
   }
 
   getCustomers(): any {
@@ -37,12 +48,20 @@ export class CustomersComponent implements OnInit {
       );
   }
 
-  appendCustomer(customers: Customers): any {
-    this.customers?.push(customers);
+  getCustomersBy(searchString: string, field: string): any {
+    this.customersService
+      .getCustomersBy(searchString, field)
+      .subscribe(
+        customers => {
+          this.customers = customers;
+          this.isLoading = false;
+        },
+        error => this.errorMessage = (error as any)
+      );
   }
 
-  redirectToForm(customer: Customers): any {
-    this.customerTransportService.customer = customer;
+  appendCustomer(customers: Customers): any {
+    this.customers?.push(customers);
   }
 
   sortField(field: string): any {

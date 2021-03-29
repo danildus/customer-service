@@ -1,7 +1,8 @@
 <div>{{ errors }}</div>
-<form *ngIf="!errors"
+<form
   [formGroup]="myForm"
   novalidate
+  *ngIf="myForm"
 >
   <div class="form-group">
     <label>First Name</label>
@@ -9,7 +10,7 @@
       class="form-control"
       name="firstName"
       formControlName="userFirstName"
-      placeholder="Enter First Name"
+      placeholder="Ivan"
     />
 
     <div
@@ -28,7 +29,7 @@
       class="form-control"
       name="lastName"
       formControlName="userLastName"
-      placeholder="Enter Last Name"
+      placeholder="Ivanov"
     />
 
     <div
@@ -47,7 +48,7 @@
       class="form-control"
       name="email"
       formControlName="userEmail"
-      placeholder="Enter Email"
+      placeholder="test@gmail.com"
     />
 
     <div
@@ -66,7 +67,7 @@
       class="form-control form"
       name="phone"
       formControlName="userPhone"
-      placeholder="Enter Phone Number"
+      placeholder="+79231752054, 89231752054, etc"
     />
 
     <div
@@ -91,7 +92,7 @@
     <button *ngIf="isUpdate"
             class="btn btn-primary"
             [disabled]="myForm.invalid"
-            (click)="editCustomer(myForm.value.userFirstName,myForm.value.userLastName, myForm.value.userEmail, myForm.value.userPhone)"
+            (click)="editCustomer(customer.id, myForm.value.userFirstName,myForm.value.userLastName, myForm.value.userEmail, myForm.value.userPhone)"
     >
       Update
     </button>

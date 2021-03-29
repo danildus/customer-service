@@ -5,8 +5,8 @@ import {
   FormControl,
   Validators,
 } from '@angular/forms';
-import { CustomerTransportService } from '../../service/customer-transport.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Customers } from '../../model/customer';
 
 @Component({
   selector: 'app-customer-form',
@@ -17,29 +17,60 @@ export class CustomerFormComponent implements OnInit {
 
   errors = '';
   isLoading = false;
-  myForm: FormGroup;
-  isCreate: boolean | undefined;
-  isUpdate: boolean | undefined;
+  myForm?: FormGroup;
+  isCreate = false;
+  isUpdate = false;
+  customer: Customers = {
+    id: 0,
+    firstName: '',
+    lastName: '',
+    email: '',
+    phoneNumber: ''
+  };
 
   constructor(private customersService: CustomersService,
-              private customerTransportService: CustomerTransportService,
-              private router: Router) {
-    if (this.customerTransportService.customer) {
+              private router: Router,
+              private route: ActivatedRoute) { }
+
+  ngOnInit(): any {
+    if (this.route.snapshot.params.customer_id) {
       this.isUpdate = true;
+      this.customersService
+        .getCustomer(this.route.snapshot.params.customer_id)
+        .subscribe(
+          customer => {
+            this.customer = customer;
+            this.getForm(customer);
+            console.log('CUSTOMER', this.customer);
+          },
+          error => {
+            this.errors = error.json();
+            this.isLoading = false;
+          }
+        );
     } else {
       this.isCreate = true;
+      this.getForm(this.customer);
     }
+  }
 
+  getForm(customer: Customers): any {
     this.myForm = new FormGroup({
-      userFirstName: new FormControl(this.customerTransportService.customer?.firstName, Validators.required),
-      userLastName: new FormControl(this.customerTransportService.customer?.lastName, Validators.required),
-      userEmail: new FormControl(this.customerTransportService.customer?.email, [
+      userFirstName: new FormControl(customer.firstName, [
         Validators.required,
-        Validators.pattern(
-          '[a-zA-Z_]+@[a-zA-Z_]+?.[a-zA-Z]{2,3}'
-        )
+        Validators.minLength(2),
+        Validators.maxLength(20)
       ]),
-      userPhone: new FormControl(this.customerTransportService.customer?.phoneNumber, [
+      userLastName: new FormControl(customer.lastName, [
+        Validators.required,
+        Validators.minLength(2),
+        Validators.maxLength(20)
+      ]),
+      userEmail: new FormControl(customer.email, [
+        Validators.required,
+        Validators.email
+      ]),
+      userPhone: new FormControl(customer.phoneNumber, [
         Validators.required,
         Validators.pattern(
           '^((8|\\+7)[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{7,10}$'
@@ -47,8 +78,6 @@ export class CustomerFormComponent implements OnInit {
       ]),
     });
   }
-
-  ngOnInit(): any { }
 
   addCustomer(firstName: string, lastName: string, email: string, phoneNumber: string): any {
     this.isLoading = true;
@@ -71,11 +100,11 @@ export class CustomerFormComponent implements OnInit {
       );
   }
 
-  editCustomer(firstName: string, lastName: string, email: string, phoneNumber: string): any {
+  editCustomer(id: number, firstName: string, lastName: string, email: string, phoneNumber: string): any {
     this.customersService
       .updateCustomer({
         // @ts-ignore
-        id: this.customerTransportService.customer.id,
+        id,
         firstName,
         lastName,
         email,

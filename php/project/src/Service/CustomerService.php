@@ -82,6 +82,31 @@ class CustomerService
         return new JsonResponse(['status' => 'Customer deleted'], Response::HTTP_NO_CONTENT);
     }
 
+    public function getBy($value, $params): JsonResponse
+    {
+        $qb = $this->customerRepository->createQueryBuilder('customer');
+        $customers = $qb
+            ->where($qb->expr()->orX(
+                $qb->expr()->like('customer.' . $params, ':value')
+            ))
+            ->setParameter('value', '%'.$value.'%')
+            ->getQuery()
+            ->getResult();
+
+        $result = [];
+        foreach ($customers as $customer) {
+            $data = [
+                'id' => $customer->getId(),
+                'firstName' => $customer->getFirstName(),
+                'lastName' => $customer->getLastName(),
+                'email' => $customer->getEmail(),
+                'phoneNumber' => $customer->getPhoneNumber(),
+            ];
+            $result[] = $data;
+        }
+        return new JsonResponse($result, Response::HTTP_OK);
+    }
+
     public function getAll(): JsonResponse
     {
         $customers = $this->customerRepository->findAll();
