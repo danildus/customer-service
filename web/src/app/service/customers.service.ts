@@ -5,7 +5,6 @@ import { Customers } from '../model/customer';
 import { environment} from '../../environments/environment';
 import 'rxjs/add/operator/map';
 
-const API_URL = 'http://localhost:8098/';
 
 @Injectable({
   providedIn: 'root'

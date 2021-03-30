@@ -41,7 +41,6 @@ export class CustomerFormComponent implements OnInit {
           customer => {
             this.customer = customer;
             this.getForm(customer);
-            console.log('CUSTOMER', this.customer);
           },
           error => {
             this.errors = error.json();
@@ -94,7 +93,7 @@ export class CustomerFormComponent implements OnInit {
           this.router.navigate(['/customers']);
         },
         error => {
-          this.errors = error.json();
+          this.errors = error.json().detail;
           this.isLoading = false;
         }
       );
@@ -116,7 +115,7 @@ export class CustomerFormComponent implements OnInit {
           this.router.navigate(['/customers']);
         },
         error => {
-          this.errors = error.json();
+          this.errors = error.json().detail;
           this.isLoading = false;
         }
       );

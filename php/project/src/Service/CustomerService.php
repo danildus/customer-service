@@ -4,70 +4,57 @@ namespace App\Service;
 
 use App\Entity\Customer;
 use App\Repository\CustomerRepository;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Validator\Validation;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 
 class CustomerService
 {
-
     private CustomerRepository $customerRepository;
+    /**
+     * @var ValidatorInterface
+     */
+    private ValidatorInterface $validator;
 
-    public function __construct(CustomerRepository $customerRepository)
+    public function __construct(CustomerRepository $customerRepository, ValidatorInterface $validator)
     {
         $this->customerRepository = $customerRepository;
+        $this->validator = $validator;
     }
 
-    public function save($firstName, $lastName, $email, $phoneNumber): JsonResponse
+    public function action($customer, $firstName, $lastName, $email, $phoneNumber)
     {
-        $newCustomer = new Customer();
-        $newCustomer
-            ->setFirstName($firstName)
-            ->setLastName($lastName)
-            ->setEmail($email)
-            ->setPhoneNumber($phoneNumber);
-
-        $validator = Validation::createValidatorBuilder()
-            ->enableAnnotationMapping()
-            ->getValidator();
-        $errors = $validator->validate($newCustomer);
-
-        if (count($errors) > 0) {
-            $errorMessages = [];
-            foreach ($errors as $error) {
-               $errorMessages[] = $error->getMessage();
-            }
-            return new JsonResponse($errorMessages, Response::HTTP_BAD_REQUEST);
-        }
-
-        $this->customerRepository->saveCustomer($newCustomer);
-        return new JsonResponse(['status' => 'Customer created!'], Response::HTTP_CREATED);
-    }
-
-    public function update($id, $firstName, $lastName, $email, $phoneNumber): JsonResponse
-    {
-        $customer = $this->customerRepository->findOneBy(['id' => $id]);
         $customer->setFirstName($firstName);
         $customer->setLastName($lastName);
         $customer->setEmail($email);
         $customer->setPhoneNumber($phoneNumber);
 
-        $validator = Validation::createValidatorBuilder()
-            ->enableAnnotationMapping()
-            ->getValidator();
-        $errors = $validator->validate($customer);
-
+        $errors = $this->validator->validate($customer);
         if (count($errors) > 0) {
             $errorMessages = [];
             foreach ($errors as $error) {
                 $errorMessages[] = $error->getMessage();
             }
-            return new JsonResponse($errorMessages, Response::HTTP_BAD_REQUEST);
+            throw new BadRequestHttpException(implode('', $errorMessages));
         }
 
-        $updatedCustumer = $this->customerRepository->updateCustomer($customer);
-        return new JsonResponse($updatedCustumer->toArray(), Response::HTTP_OK);
+        return $customer;
+    }
+
+    public function save($firstName, $lastName, $email, $phoneNumber)
+    {
+        $newCustomer = new Customer();
+        $newCustomer = $this->action($newCustomer, $firstName, $lastName, $email, $phoneNumber);
+
+        $this->customerRepository->saveCustomer($newCustomer);
+    }
+
+    public function update($id, $firstName, $lastName, $email, $phoneNumber): Customer
+    {
+        $customer = $this->customerRepository->findOneBy(['id' => $id]);
+        $customer = $this->action($customer, $firstName, $lastName, $email, $phoneNumber);
+
+        return $this->customerRepository->updateCustomer($customer);
     }
 
     public function delete($id)
@@ -75,14 +62,13 @@ class CustomerService
         $customer = $this->customerRepository->findOneBy(['id' => $id]);
 
         if (!$customer){
-            return new JsonResponse(['status' => 'Customer not found'], Response::HTTP_BAD_REQUEST);
+            throw new BadRequestHttpException('Customer not found');
         }
 
         $this->customerRepository->removeCustomer($customer);
-        return new JsonResponse(['status' => 'Customer deleted'], Response::HTTP_NO_CONTENT);
     }
 
-    public function getBy($value, $params): JsonResponse
+    public function getBy($value, $params): array
     {
         $qb = $this->customerRepository->createQueryBuilder('customer');
         $customers = $qb
@@ -104,10 +90,10 @@ class CustomerService
             ];
             $result[] = $data;
         }
-        return new JsonResponse($result, Response::HTTP_OK);
+        return $result;
     }
 
-    public function getAll(): JsonResponse
+    public function getAll(): array
     {
         $customers = $this->customerRepository->findAll();
 
@@ -123,21 +109,19 @@ class CustomerService
             $result[] = $data;
         }
 
-        return new JsonResponse($result, Response::HTTP_OK);
+        return $result;
     }
 
-    public function get($id): JsonResponse
+    public function get($id): array
     {
         $customer = $this->customerRepository->findOneBy(['id' => $id]);
 
-        $data = [
+        return [
             'id' => $customer->getId(),
             'firstName' => $customer->getFirstName(),
             'lastName' => $customer->getLastName(),
             'email' => $customer->getEmail(),
             'phoneNumber' => $customer->getPhoneNumber(),
         ];
-
-        return new JsonResponse($data, Response::HTTP_OK);
     }
 }

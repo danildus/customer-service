@@ -2,8 +2,8 @@
 
 namespace App\Controller;
 
-use App\Repository\CustomerRepository;
 use App\Service\CustomerService;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -11,12 +11,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 class CustomerController
 {
-    private CustomerRepository $customerRepository;
 
-    public function __construct(CustomerRepository $customerRepository)
-    {
-        $this->customerRepository = $customerRepository;
-    }
+    public function __construct() {}
 
     /**
      * @Route("/api/customers/{id}", name="get_one_customer", methods={"GET"})
@@ -26,7 +22,9 @@ class CustomerController
      */
     public function get($id, CustomerService $customerService): JsonResponse
     {
-        return $customerService->get($id);
+        $result = $customerService->get($id);
+
+        return new JsonResponse($result, Response::HTTP_OK);
     }
 
     /**
@@ -38,7 +36,9 @@ class CustomerController
      */
     public function getByParams($value, $params, CustomerService $customerService): JsonResponse
     {
-        return $customerService->getBy($value, $params);
+        $result = $customerService->getBy($value, $params);
+
+        return new JsonResponse($result, Response::HTTP_OK);
     }
 
     /**
@@ -49,7 +49,9 @@ class CustomerController
 
     public function getAll(CustomerService $customerService): JsonResponse
     {
-        return $customerService->getAll();
+        $result = $customerService->getAll();
+
+        return new JsonResponse($result, Response::HTTP_OK);
     }
 
     /**
@@ -66,7 +68,9 @@ class CustomerController
         $email = $data['email'];
         $phoneNumber = $data['phoneNumber'];
 
-        return $customerService->save($firstName, $lastName, $email ,$phoneNumber);
+        $customerService->save($firstName, $lastName, $email ,$phoneNumber);
+
+        return new JsonResponse(['status' => 'Customer created!'], Response::HTTP_CREATED);
     }
 
     /**
@@ -84,7 +88,9 @@ class CustomerController
         $email = $data['email'];
         $phoneNumber = $data['phoneNumber'];
 
-        return $customerService->update($id, $firstName, $lastName, $email, $phoneNumber);
+        $updateCustomer = $customerService->update($id, $firstName, $lastName, $email, $phoneNumber);
+
+        return new JsonResponse($updateCustomer->toArray(), Response::HTTP_OK);
     }
 
     /**
@@ -95,7 +101,9 @@ class CustomerController
      */
     public function delete($id, CustomerService $customerService): JsonResponse
     {
-        return $customerService->delete($id);
+        $customerService->delete($id);
+
+        return new JsonResponse(['status' => 'Customer deleted'], Response::HTTP_NO_CONTENT);
     }
 
 }

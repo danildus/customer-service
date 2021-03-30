@@ -15,7 +15,8 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class CustomerRepository extends ServiceEntityRepository
 {
-    private $manager;
+
+    private EntityManagerInterface $manager;
 
     public function __construct
     (
@@ -27,16 +28,20 @@ class CustomerRepository extends ServiceEntityRepository
         $this->manager = $manager;
     }
 
-    public function saveCustomer(Customer $customer)
+    public function actionCustomer(Customer $customer)
     {
         $this->manager->persist($customer);
         $this->manager->flush();
     }
 
+    public function saveCustomer(Customer $customer)
+    {
+        $this->actionCustomer($customer);
+    }
+
     public function updateCustomer(Customer $customer): Customer
     {
-        $this->manager->persist($customer);
-        $this->manager->flush();
+        $this->actionCustomer($customer);
 
         return $customer;
     }

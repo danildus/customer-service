@@ -8,7 +8,6 @@ import { Routes, RouterModule } from '@angular/router';
 import { CustomerFormComponent } from './components/customer-form/customer-form.component';
 import { HttpModule } from '@angular/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FilterPipe } from './pipes/filter.pipe';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
@@ -30,7 +29,6 @@ const routes: Routes = [
     HomeComponent,
     CustomersComponent,
     CustomerFormComponent,
-    FilterPipe
   ],
   imports: [
     BrowserModule,

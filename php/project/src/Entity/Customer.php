@@ -5,9 +5,14 @@ namespace App\Entity;
 use App\Repository\CustomerRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass=CustomerRepository::class)
+ * @UniqueEntity(
+ *     fields={"email"},
+ *     message="This email is already exist"
+ * )
  */
 class Customer
 {
@@ -16,7 +21,7 @@ class Customer
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private ?int $id;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -30,7 +35,7 @@ class Customer
      *      maxMessage = "Your first name cannot be longer than {{ limit }} characters"
      * )
      */
-    private $firstName;
+    private ?string $firstName;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -44,7 +49,7 @@ class Customer
      *      maxMessage = "Your last name cannot be longer than {{ limit }} characters"
      * )
      */
-    private $lastName;
+    private ?string $lastName;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true, unique=true)
@@ -52,7 +57,7 @@ class Customer
      *     message = "The email '{{ value }}' is not a valid email."
      * )
      */
-    private $email;
+    private ?string $email;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -61,7 +66,7 @@ class Customer
      *     message="Your phone number is incorrect"
      * )
      */
-    private $phoneNumber;
+    private ?string $phoneNumber;
 
     public function getId(): ?int
     {
