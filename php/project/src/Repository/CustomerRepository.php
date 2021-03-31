@@ -28,20 +28,22 @@ class CustomerRepository extends ServiceEntityRepository
         $this->manager = $manager;
     }
 
-    public function actionCustomer(Customer $customer)
+    public function findLike($value, $field)
+    {
+        $qb = $this->createQueryBuilder('customer');
+        return $qb
+            ->where($qb->expr()->orX(
+                $qb->expr()->like("lower(customer.$field)", ':value')
+            ))
+            ->setParameter('value', '%' . strtolower($value) . '%')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function saveCustomer(Customer $customer): Customer
     {
         $this->manager->persist($customer);
         $this->manager->flush();
-    }
-
-    public function saveCustomer(Customer $customer)
-    {
-        $this->actionCustomer($customer);
-    }
-
-    public function updateCustomer(Customer $customer): Customer
-    {
-        $this->actionCustomer($customer);
 
         return $customer;
     }

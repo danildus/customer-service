@@ -6,20 +6,21 @@ import { HomeComponent } from './components/home/home.component';
 import { CustomersComponent } from './components/customers/customers.component';
 import { Routes, RouterModule } from '@angular/router';
 import { CustomerFormComponent } from './components/customer-form/customer-form.component';
-import { HttpModule } from '@angular/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatInputModule } from '@angular/material/input';
+import { NotFoundComponent } from './not-found/not-found.component';
+import { HttpClientModule } from '@angular/common/http';
 
 const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' },
   { path: 'customers', component: CustomersComponent },
   { path: 'customers/modify', component: CustomerFormComponent },
   { path: 'customers/:customer_id/modify', component: CustomerFormComponent },
-  { path: '**', redirectTo: '', pathMatch: 'full' }
+  { path: '**', component: NotFoundComponent, pathMatch: 'full' }
 ];
 
 
@@ -29,11 +30,12 @@ const routes: Routes = [
     HomeComponent,
     CustomersComponent,
     CustomerFormComponent,
+    NotFoundComponent,
   ],
   imports: [
     BrowserModule,
     RouterModule.forRoot(routes),
-    HttpModule,
+    HttpClientModule,
     ReactiveFormsModule,
     MatSliderModule,
     MatFormFieldModule,

@@ -54,58 +54,34 @@ class CustomerService
         $customer = $this->customerRepository->findOneBy(['id' => $id]);
         $customer = $this->action($customer, $firstName, $lastName, $email, $phoneNumber);
 
-        return $this->customerRepository->updateCustomer($customer);
+        return $this->customerRepository->saveCustomer($customer);
     }
 
     public function delete($id)
     {
         $customer = $this->customerRepository->findOneBy(['id' => $id]);
-
-        if (!$customer){
+        if (!$customer) {
             throw new BadRequestHttpException('Customer not found');
         }
 
         $this->customerRepository->removeCustomer($customer);
     }
 
-    public function getBy($value, $params): array
+    public function getBy($value, $field): array
     {
-        $qb = $this->customerRepository->createQueryBuilder('customer');
-        $customers = $qb
-            ->where($qb->expr()->orX(
-                $qb->expr()->like('customer.' . $params, ':value')
-            ))
-            ->setParameter('value', '%'.$value.'%')
-            ->getQuery()
-            ->getResult();
-
-        $result = [];
-        foreach ($customers as $customer) {
-            $data = [
-                'id' => $customer->getId(),
-                'firstName' => $customer->getFirstName(),
-                'lastName' => $customer->getLastName(),
-                'email' => $customer->getEmail(),
-                'phoneNumber' => $customer->getPhoneNumber(),
-            ];
-            $result[] = $data;
+        if (!($value && $field)) {
+            $customers = $this->customerRepository->findAll();
+        } else {
+            $customers = $this->customerRepository->findLike($value, $field);
         }
-        return $result;
-    }
 
-    public function getAll(): array
-    {
-        $customers = $this->customerRepository->findAll();
+        if (!$customers) {
+            throw new BadRequestHttpException('Customers not found');
+        }
 
         $result = [];
         foreach ($customers as $customer) {
-            $data = [
-                'id' => $customer->getId(),
-                'firstName' => $customer->getFirstName(),
-                'lastName' => $customer->getLastName(),
-                'email' => $customer->getEmail(),
-                'phoneNumber' => $customer->getPhoneNumber(),
-            ];
+            $data = $customer->toArray();
             $result[] = $data;
         }
 
@@ -115,13 +91,10 @@ class CustomerService
     public function get($id): array
     {
         $customer = $this->customerRepository->findOneBy(['id' => $id]);
+        if (!$customer) {
+            throw new BadRequestHttpException('Customer not found');
+        }
 
-        return [
-            'id' => $customer->getId(),
-            'firstName' => $customer->getFirstName(),
-            'lastName' => $customer->getLastName(),
-            'email' => $customer->getEmail(),
-            'phoneNumber' => $customer->getPhoneNumber(),
-        ];
+        return $customer->toArray();
     }
 }

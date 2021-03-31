@@ -12,8 +12,6 @@ use Symfony\Component\HttpFoundation\Request;
 class CustomerController
 {
 
-    public function __construct() {}
-
     /**
      * @Route("/api/customers/{id}", name="get_one_customer", methods={"GET"})
      * @param $id
@@ -28,28 +26,16 @@ class CustomerController
     }
 
     /**
-     * @Route("/api/customers/{params}/{value}", name="get_customer_by", methods={"GET"})
-     * @param $value
-     * @param $params
+     * @Route("/api/customers", name="get_customer_by", methods={"GET"})
+     * @param Request $request
      * @param CustomerService $customerService
      * @return JsonResponse
      */
-    public function getByParams($value, $params, CustomerService $customerService): JsonResponse
+    public function getByParams(Request $request, CustomerService $customerService): JsonResponse
     {
-        $result = $customerService->getBy($value, $params);
-
-        return new JsonResponse($result, Response::HTTP_OK);
-    }
-
-    /**
-     * @Route("/api/customers", name="get_all_customer", methods={"GET"})
-     * @param CustomerService $customerService
-     * @return JsonResponse
-     */
-
-    public function getAll(CustomerService $customerService): JsonResponse
-    {
-        $result = $customerService->getAll();
+        $value = $request->query->get('value');
+        $field = $request->query->get('field');
+        $result = $customerService->getBy($value, $field);
 
         return new JsonResponse($result, Response::HTTP_OK);
     }

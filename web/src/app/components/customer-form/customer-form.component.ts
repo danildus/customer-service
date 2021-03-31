@@ -20,13 +20,7 @@ export class CustomerFormComponent implements OnInit {
   myForm?: FormGroup;
   isCreate = false;
   isUpdate = false;
-  customer: Customers = {
-    id: 0,
-    firstName: '',
-    lastName: '',
-    email: '',
-    phoneNumber: ''
-  };
+  customer = new Customers();
 
   constructor(private customersService: CustomersService,
               private router: Router,
@@ -40,36 +34,36 @@ export class CustomerFormComponent implements OnInit {
         .subscribe(
           customer => {
             this.customer = customer;
-            this.getForm(customer);
+            this.getForm();
           },
-          error => {
-            this.errors = error.json();
+          errors => {
+            this.errors = errors.error.detail;
             this.isLoading = false;
           }
         );
     } else {
       this.isCreate = true;
-      this.getForm(this.customer);
+      this.getForm();
     }
   }
 
-  getForm(customer: Customers): any {
+  getForm(): any {
     this.myForm = new FormGroup({
-      userFirstName: new FormControl(customer.firstName, [
+      firstName: new FormControl(this.customer.firstName, [
         Validators.required,
         Validators.minLength(2),
         Validators.maxLength(20)
       ]),
-      userLastName: new FormControl(customer.lastName, [
+      lastName: new FormControl(this.customer.lastName, [
         Validators.required,
         Validators.minLength(2),
         Validators.maxLength(20)
       ]),
-      userEmail: new FormControl(customer.email, [
+      email: new FormControl(this.customer.email, [
         Validators.required,
         Validators.email
       ]),
-      userPhone: new FormControl(customer.phoneNumber, [
+      phoneNumber: new FormControl(this.customer.phoneNumber, [
         Validators.required,
         Validators.pattern(
           '^((8|\\+7)[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{7,10}$'
@@ -78,44 +72,34 @@ export class CustomerFormComponent implements OnInit {
     });
   }
 
-  addCustomer(firstName: string, lastName: string, email: string, phoneNumber: string): any {
+  addCustomer(): any {
     this.isLoading = true;
+    Object.assign(this.customer, this.myForm?.value);
     this.customersService
-      .addCustomer({
-        firstName,
-        lastName,
-        email,
-        phoneNumber,
-      })
+      .addCustomer(this.customer)
       .subscribe(
         () => {
           this.isLoading = false;
           this.router.navigate(['/customers']);
         },
-        error => {
-          this.errors = error.json().detail;
+        errors => {
+          this.errors = errors.error.detail;
           this.isLoading = false;
         }
       );
   }
 
-  editCustomer(id: number, firstName: string, lastName: string, email: string, phoneNumber: string): any {
+  editCustomer(): any {
+    Object.assign(this.customer, this.myForm?.value);
     this.customersService
-      .updateCustomer({
-        // @ts-ignore
-        id,
-        firstName,
-        lastName,
-        email,
-        phoneNumber
-      })
+      .updateCustomer(this.customer)
       .subscribe(
         () => {
           this.isLoading = false;
           this.router.navigate(['/customers']);
         },
-        error => {
-          this.errors = error.json().detail;
+        errors => {
+          this.errors = errors.error.detail;
           this.isLoading = false;
         }
       );

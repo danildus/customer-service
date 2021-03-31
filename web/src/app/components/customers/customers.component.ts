@@ -18,34 +18,23 @@ export class CustomersComponent implements OnInit {
   errors = '';
   isSorted = false;
   searchString = '';
-  searchType = '';
-  searchStringControl: FormControl = new FormControl();
+  searchTypeControl: FormControl = new FormControl('firstName');
+  searchStringControl: FormControl = new FormControl('');
 
   constructor(private customersService: CustomersService) { }
 
   ngOnInit(): any {
-    this.getCustomers();
-    this.searchStringControl.valueChanges.pipe(debounceTime(300)).subscribe(
-      value => {
-        if (value) {
-          this.getCustomersBy(value, this.searchType);
-        } else {
-          this.getCustomers();
-        }
+    this.searchTypeControl.valueChanges.subscribe(
+      () => {
+        this.searchStringControl.setValue('');
       }
     );
-  }
-
-  getCustomers(): any {
-    this.customersService
-      .getCustomers()
-      .subscribe(
-        customers => {
-          this.customers = customers;
-          this.isLoading = false;
-        },
-        error => this.errorMessage = (error as any)
-      );
+    this.getCustomersBy(this.searchStringControl.value, this.searchTypeControl.value);
+    this.searchStringControl.valueChanges.pipe(debounceTime(300)).subscribe(
+      value => {
+        this.getCustomersBy(value, this.searchTypeControl.value);
+      }
+    );
   }
 
   getCustomersBy(searchString: string, field: string): any {
@@ -56,7 +45,10 @@ export class CustomersComponent implements OnInit {
           this.customers = customers;
           this.isLoading = false;
         },
-        error => this.errorMessage = (error as any)
+        errors => {
+          this.errors = errors.error.detail;
+          this.isLoading = false;
+        }
       );
   }
 
@@ -86,8 +78,8 @@ export class CustomersComponent implements OnInit {
           this.isLoading = false;
           this.customers?.splice(index, 1);
         },
-        error => {
-          this.errors = error.json().errors;
+        errors => {
+          this.errors = errors.error.detail;
           this.isLoading = false;
         }
       );

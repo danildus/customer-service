@@ -1,4 +1,8 @@
-<div>{{ errors }}</div>
+<div class="alert alert-danger"
+     *ngIf="errors"
+>
+  {{ errors }}
+</div>
 <form
   [formGroup]="myForm"
   novalidate
@@ -9,15 +13,15 @@
     <input
       class="form-control"
       name="firstName"
-      formControlName="userFirstName"
+      formControlName="firstName"
       placeholder="Ivan"
     />
 
     <div
       class="alert alert-danger"
       *ngIf="
-            myForm.controls['userFirstName'].invalid &&
-            myForm.controls['userFirstName'].touched
+            myForm.controls['firstName'].invalid &&
+            myForm.controls['firstName'].touched
           "
     >
       Incorrect first name
@@ -28,15 +32,15 @@
     <input
       class="form-control"
       name="lastName"
-      formControlName="userLastName"
+      formControlName="lastName"
       placeholder="Ivanov"
     />
 
     <div
       class="alert alert-danger"
       *ngIf="
-            myForm.controls['userLastName'].invalid &&
-            myForm.controls['userLastName'].touched
+            myForm.controls['lastName'].invalid &&
+            myForm.controls['lastName'].touched
           "
     >
       Incorrect last name
@@ -47,15 +51,15 @@
     <input
       class="form-control"
       name="email"
-      formControlName="userEmail"
+      formControlName="email"
       placeholder="test@gmail.com"
     />
 
     <div
       class="alert alert-danger"
       *ngIf="
-            myForm.controls['userEmail'].invalid &&
-            myForm.controls['userEmail'].touched
+            myForm.controls['email'].invalid &&
+            myForm.controls['email'].touched
           "
     >
       Incorrect email
@@ -66,15 +70,15 @@
     <input
       class="form-control form"
       name="phone"
-      formControlName="userPhone"
+      formControlName="phoneNumber"
       placeholder="+79231752054, 89231752054, etc"
     />
 
     <div
       class="alert alert-danger"
       *ngIf="
-            myForm.controls['userPhone'].invalid &&
-            myForm.controls['userPhone'].touched
+            myForm.controls['phoneNumber'].invalid &&
+            myForm.controls['phoneNumber'].touched
           "
     >
       Incorrect Phone Number
@@ -84,7 +88,7 @@
     <button *ngIf="isCreate"
             class="btn btn-primary"
             [disabled]="myForm.invalid"
-            (click)="addCustomer(myForm.value.userFirstName,myForm.value.userLastName, myForm.value.userEmail, myForm.value.userPhone)"
+            (click)="addCustomer()"
     >
       Add
     </button>
@@ -92,7 +96,7 @@
     <button *ngIf="isUpdate"
             class="btn btn-primary"
             [disabled]="myForm.invalid"
-            (click)="editCustomer(customer.id, myForm.value.userFirstName,myForm.value.userLastName, myForm.value.userEmail, myForm.value.userPhone)"
+            (click)="editCustomer()"
     >
       Update
     </button>

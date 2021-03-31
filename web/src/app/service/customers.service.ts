@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
 import { Observable } from 'rxjs';
-import { Customers } from '../model/customer';
-import { environment} from '../../environments/environment';
+import { environment } from '../../environments/environment';
 import 'rxjs/add/operator/map';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Customers } from '../model/customer';
 
 
 @Injectable({
@@ -11,29 +11,30 @@ import 'rxjs/add/operator/map';
 })
 export class CustomersService {
 
-  constructor(private http: Http) { }
+  constructor(private http: HttpClient) { }
 
-  getCustomer(id: number): Observable<Customers> {
-    return this.http.get(environment.apiUrl + 'api/customers/' + id).map(res => res.json());
+  getCustomer(id: number): Observable<any> {
+    return this.http.get(environment.apiUrl + 'api/customers/' + id);
   }
 
-  getCustomers(): Observable<Customers[]> {
-    return this.http.get(environment.apiUrl + 'api/customers').map(res => res.json());
+  getCustomersBy(searchString?: string, field?: string): Observable<any> {
+    let params = new HttpParams();
+    if (field && searchString) {
+      params = params.set('field', field);
+      params = params.set('value', searchString);
+    }
+    return this.http.get(environment.apiUrl + 'api/customers', {params});
   }
 
-  getCustomersBy(searchString: string, field: string): Observable<Customers[]> {
-    return this.http.get(environment.apiUrl + 'api/customers/' + field + '/' + searchString).map(res => res.json());
+  addCustomer(customer: Customers): Observable<any> {
+    return this.http.post(environment.apiUrl + 'api/customers', customer);
   }
 
-  addCustomer(customer: { firstName: string, lastName: string, email: string, phoneNumber: string; }): Observable<Customers> {
-    return this.http.post(environment.apiUrl + 'api/customers', customer).map(res => res.json());
+  updateCustomer(customer: Customers): Observable<any> {
+    return this.http.put(environment.apiUrl + 'api/customers/' + customer.id, customer);
   }
 
-  updateCustomer(customer: { firstName: string; lastName: string; phoneNumber: string; id: number; email: string }): Observable<Customers> {
-    return this.http.put(environment.apiUrl + 'api/customers/' + customer.id, customer).map(res => res.json());
-  }
-
-  deleteCustomer(customer: { id: number; }): Observable<Customers> {
-    return this.http.delete(environment.apiUrl + 'api/customers/' + customer.id).map(res => res.json());
+  deleteCustomer(customer: { id: number; }): Observable<any> {
+    return this.http.delete(environment.apiUrl + 'api/customers/' + customer.id);
   }
 }

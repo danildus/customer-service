@@ -1,7 +1,11 @@
+<div class="alert alert-danger"
+     *ngIf="errors"
+>
+  {{ errors }}
+</div>
 <mat-form-field appearance="fill">
   <mat-label>Search field</mat-label>
-  <mat-select [(value)]="searchType">
-    <mat-option>None</mat-option>
+  <mat-select [formControl]="searchTypeControl">
     <mat-option value="firstName">First Name</mat-option>
     <mat-option value="lastName">Last Name</mat-option>
     <mat-option value="email">Email</mat-option>
@@ -18,7 +22,7 @@
         type="text"
         class="form-control"
         name="searchString"
-        placeholder="Search for First Name..."
+        placeholder="Search"
         [formControl]="searchStringControl"
       />
     </div>
