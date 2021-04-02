@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\Customer;
 use App\Repository\CustomerRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -67,25 +68,27 @@ class CustomerService
         $this->customerRepository->removeCustomer($customer);
     }
 
-    public function getBy($value, $field): array
+    public function getBy($value, $field, $limit, $offset): array
     {
-        if (!($value && $field)) {
-            $customers = $this->customerRepository->findAll();
-        } else {
-            $customers = $this->customerRepository->findLike($value, $field);
-        }
+        $customers = $this->customerRepository->findLike($value, $field, $limit, $offset);
 
         if (!$customers) {
             throw new BadRequestHttpException('Customers not found');
         }
 
-        $result = [];
-        foreach ($customers as $customer) {
-            $data = $customer->toArray();
-            $result[] = $data;
+        if ($limit && $offset) {
+            foreach ($customers['items'] as &$customer) {
+                $customer = $customer->toArray();
+            }
+            unset($customer);
+        } else {
+            foreach ($customers as &$customer) {
+                $customer = $customer->toArray();
+            }
+            unset($customer);
         }
 
-        return $result;
+        return $customers;
     }
 
     public function get($id): array

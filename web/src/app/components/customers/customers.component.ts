@@ -1,8 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import { CustomersService } from '../../service/customers.service';
 import { Customers } from '../../model/customer';
 import { FormControl } from '@angular/forms';
 import { debounceTime } from 'rxjs/operators';
+import { MatTableDataSource } from '@angular/material/table';
+import { PageEvent } from '@angular/material/paginator';
+import { CustomerFilter } from '../../model/customer-filter';
 
 @Component({
   selector: 'app-customers',
@@ -13,6 +16,7 @@ import { debounceTime } from 'rxjs/operators';
 export class CustomersComponent implements OnInit {
 
   customers: Customers[] = [];
+  customerFilter = new CustomerFilter();
   errorMessage = '';
   isLoading = true;
   errors = '';
@@ -20,6 +24,9 @@ export class CustomersComponent implements OnInit {
   searchString = '';
   searchTypeControl: FormControl = new FormControl('firstName');
   searchStringControl: FormControl = new FormControl('');
+  displayedColumns: string[] = ['firstName', 'lastName', 'email', 'phoneNumber', 'edit', 'delete'];
+  dataSource = new MatTableDataSource<Customers>();
+  pageEvent: PageEvent = new PageEvent();
 
   constructor(private customersService: CustomersService) { }
 
@@ -29,20 +36,28 @@ export class CustomersComponent implements OnInit {
         this.searchStringControl.setValue('');
       }
     );
-    this.getCustomersBy(this.searchStringControl.value, this.searchTypeControl.value);
+    this.getCustomersBy(this.pageEvent);
     this.searchStringControl.valueChanges.pipe(debounceTime(300)).subscribe(
       value => {
-        this.getCustomersBy(value, this.searchTypeControl.value);
+        this.customerFilter.setFieldName(this.searchTypeControl.value);
+        this.customerFilter.setFieldValue(value);
+        this.getCustomersBy(this.pageEvent);
       }
     );
   }
 
-  getCustomersBy(searchString: string, field: string): any {
+  getCustomersBy(event: PageEvent): any {
+    if (Object.keys(event).length !== 0) {
+      this.customerFilter.setPage(event.pageIndex);
+      this.customerFilter.setLimit(event.pageSize);
+    }
     this.customersService
-      .getCustomersBy(searchString, field)
+      .getCustomersBy(this.customerFilter)
       .subscribe(
         customers => {
-          this.customers = customers;
+          this.customers = customers.items;
+          this.customerFilter.setItemLength(customers.totalItemCount);
+          this.dataSource = new MatTableDataSource<Customers>(this.customers);
           this.isLoading = false;
         },
         errors => {
@@ -65,7 +80,7 @@ export class CustomersComponent implements OnInit {
       this.customers?.reverse();
       this.isSorted = false;
     }
-
+    this.dataSource = new MatTableDataSource<Customers>(this.customers);
   }
 
   deleteCustomer(customer: Customers, index: number): any {
@@ -77,6 +92,7 @@ export class CustomersComponent implements OnInit {
         () => {
           this.isLoading = false;
           this.customers?.splice(index, 1);
+          this.dataSource = new MatTableDataSource<Customers>(this.customers);
         },
         errors => {
           this.errors = errors.error.detail;

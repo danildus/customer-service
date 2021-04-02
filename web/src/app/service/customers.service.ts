@@ -4,6 +4,7 @@ import { environment } from '../../environments/environment';
 import 'rxjs/add/operator/map';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Customers } from '../model/customer';
+import { CustomerFilter } from '../model/customer-filter';
 
 
 @Injectable({
@@ -17,12 +18,16 @@ export class CustomersService {
     return this.http.get(environment.apiUrl + 'api/customers/' + id);
   }
 
-  getCustomersBy(searchString?: string, field?: string): Observable<any> {
+  getCustomersBy(customerFilter: CustomerFilter): Observable<any> {
     let params = new HttpParams();
-    if (field && searchString) {
-      params = params.set('field', field);
-      params = params.set('value', searchString);
+
+    if (customerFilter.getFieldName() && customerFilter.getFieldValue()) {
+      params = params.set('field', customerFilter.getFieldName());
+      params = params.set('value', customerFilter.getFieldValue());
     }
+    params = params.set('limit', String(customerFilter.getLimit()));
+    params = params.set('offset', String(customerFilter.getPage() + 1));
+
     return this.http.get(environment.apiUrl + 'api/customers', {params});
   }
 

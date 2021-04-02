@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\DTO\Paginate;
 use App\Entity\Customer;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -28,16 +29,32 @@ class CustomerRepository extends ServiceEntityRepository
         $this->manager = $manager;
     }
 
-    public function findLike($value, $field)
+    public function findLike($value, $field, $limit, $offset)
     {
+        $totalCount = $this->createQueryBuilder('a')
+        ->select('count(a.id)')
+        ->getQuery()
+        ->getSingleScalarResult();
+
         $qb = $this->createQueryBuilder('customer');
-        return $qb
-            ->where($qb->expr()->orX(
+        if ($value && $field) {
+            $qb = $this->createQueryBuilder('customer');
+            $qb = $qb->where($qb->expr()->orX(
                 $qb->expr()->like("lower(customer.$field)", ':value')
             ))
-            ->setParameter('value', '%' . strtolower($value) . '%')
-            ->getQuery()
-            ->getResult();
+                ->setParameter('value', '%' . strtolower($value) . '%');
+        }
+
+        if ($limit && $offset) {
+            $qb->setFirstResult($limit * ($offset - 1))
+                ->setMaxResults($limit);
+            $result = new Paginate($qb->getQuery()->getResult(), $totalCount, $limit, $offset);
+            $result = $result->serialize();
+        } else {
+            $result = $qb->getQuery()->getResult();
+        }
+
+        return $result;
     }
 
     public function saveCustomer(Customer $customer): Customer
