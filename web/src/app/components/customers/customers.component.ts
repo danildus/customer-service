@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit } from '@angular/core';
 import { CustomersService } from '../../service/customers.service';
 import { Customers } from '../../model/customer';
 import { FormControl } from '@angular/forms';
@@ -26,7 +26,7 @@ export class CustomersComponent implements OnInit {
   searchStringControl: FormControl = new FormControl('');
   displayedColumns: string[] = ['firstName', 'lastName', 'email', 'phoneNumber', 'edit', 'delete'];
   dataSource = new MatTableDataSource<Customers>();
-  pageEvent: PageEvent = new PageEvent();
+  pageEvent?: PageEvent;
 
   constructor(private customersService: CustomersService) { }
 
@@ -36,12 +36,15 @@ export class CustomersComponent implements OnInit {
         this.searchStringControl.setValue('');
       }
     );
-    this.getCustomersBy(this.pageEvent);
+
+    this.getCustomersBy(new PageEvent());
+
     this.searchStringControl.valueChanges.pipe(debounceTime(300)).subscribe(
       value => {
         this.customerFilter.setFieldName(this.searchTypeControl.value);
         this.customerFilter.setFieldValue(value);
-        this.getCustomersBy(this.pageEvent);
+        this.customerFilter.setPage(0);
+        this.getCustomersBy(new PageEvent());
       }
     );
   }

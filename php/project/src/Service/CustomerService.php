@@ -2,9 +2,9 @@
 
 namespace App\Service;
 
+use App\DTO\Paginate;
 use App\Entity\Customer;
 use App\Repository\CustomerRepository;
-use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -68,27 +68,30 @@ class CustomerService
         $this->customerRepository->removeCustomer($customer);
     }
 
-    public function getBy($value, $field, $limit, $offset): array
+    public function getBy(int $limit, int $offset, ?string $value, ?string $field): array
     {
-        $customers = $this->customerRepository->findLike($value, $field, $limit, $offset);
+        $customers = $this->customerRepository->findLike($limit, $offset, $value, $field);
 
         if (!$customers) {
             throw new BadRequestHttpException('Customers not found');
         }
 
         if ($limit && $offset) {
-            foreach ($customers['items'] as &$customer) {
+            foreach ($customers as &$customer) {
                 $customer = $customer->toArray();
             }
-            unset($customer);
+            $customersCount = $this->customerRepository->findLike($limit, $offset, $value, $field, true);
+            $result = new Paginate($customers, $customersCount, $limit, $offset);
+            $result = $result->serialize();
         } else {
             foreach ($customers as &$customer) {
                 $customer = $customer->toArray();
             }
-            unset($customer);
+            $result = $customers;
         }
+        unset($customer);
 
-        return $customers;
+        return $result;
     }
 
     public function get($id): array

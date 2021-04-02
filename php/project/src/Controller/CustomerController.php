@@ -38,7 +38,7 @@ class CustomerController
         $limit = $request->query->get('limit');
         $offset = $request->query->get('offset');
 
-        $result = $customerService->getBy($value, $field, $limit, $offset);
+        $result = $customerService->getBy($limit, $offset, $value, $field);
 
         return new JsonResponse($result, Response::HTTP_OK);
     }

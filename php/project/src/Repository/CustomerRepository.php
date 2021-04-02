@@ -2,7 +2,6 @@
 
 namespace App\Repository;
 
-use App\DTO\Paginate;
 use App\Entity\Customer;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -29,32 +28,34 @@ class CustomerRepository extends ServiceEntityRepository
         $this->manager = $manager;
     }
 
-    public function findLike($value, $field, $limit, $offset)
+    public function findLike(int $limit, int $offset, ?string $value, ?string $field, ?bool $isCntResult = false)
     {
-        $totalCount = $this->createQueryBuilder('a')
-        ->select('count(a.id)')
-        ->getQuery()
-        ->getSingleScalarResult();
-
         $qb = $this->createQueryBuilder('customer');
+        $expr = $qb->expr();
+
+        if ($isCntResult) {
+            $qb = $qb->select('count(customer.id)');
+        }
+
         if ($value && $field) {
-            $qb = $this->createQueryBuilder('customer');
-            $qb = $qb->where($qb->expr()->orX(
-                $qb->expr()->like("lower(customer.$field)", ':value')
-            ))
+            $qb = $qb
+                ->where($expr->orX(
+                    $expr->like(sprintf('lower(customer.%s)', $field), ':value')
+                ))
                 ->setParameter('value', '%' . strtolower($value) . '%');
         }
 
-        if ($limit && $offset) {
-            $qb->setFirstResult($limit * ($offset - 1))
-                ->setMaxResults($limit);
-            $result = new Paginate($qb->getQuery()->getResult(), $totalCount, $limit, $offset);
-            $result = $result->serialize();
+        if ($isCntResult) {
+            $qb = $qb->getQuery()->getSingleScalarResult();
         } else {
-            $result = $qb->getQuery()->getResult();
+            $qb = $qb
+                ->setFirstResult($limit * ($offset - 1))
+                ->setMaxResults($limit)
+                ->getQuery()
+                ->getResult();
         }
 
-        return $result;
+        return $qb;
     }
 
     public function saveCustomer(Customer $customer): Customer
